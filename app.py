@@ -416,7 +416,7 @@ def pf_home():
 
 def calculate_language_proficiency(username, access_token):
     # Authenticate with GitHub
-    access_token = "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"
+    access_token = "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"
     g = Github(access_token)
     user = g.get_user(username)
     
@@ -476,7 +476,7 @@ def plp_form():
 def plp():
     if request.method == 'POST':
         username = request.form.get('username')
-        access_token = "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"
+        access_token = "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"
         
         percentage_scores = calculate_language_proficiency(username, access_token)
         session['percentage_scores'] = percentage_scores
@@ -490,7 +490,7 @@ def plp():
 #----------------git-compare---------------------------
 def get_language_proficiency(username):
     # Authenticate with GitHub
-    access_token = "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"
+    access_token = "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"
     g = Github(access_token)
     user = g.get_user(username)
     
@@ -584,7 +584,7 @@ def compare():
 #------------LinkedIn job category ---------------------------------------------------------------------------------------------
 
 def scrape_linkedin_skills(linkedin_profile_url):
-    api_key = '9D-mKt3-m74E0Kacy5Z89A'
+    api_key = '6yX2xeot-MNxR_bBzCFaGg'
     api_endpoint = 'https://nubela.co/proxycurl/api/v2/linkedin'
     headers = {'Authorization': 'Bearer ' + api_key}
 
@@ -612,7 +612,7 @@ def job_cat():
             #predicted_category = model.predict([skills])  #model takes a list of skills
             predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
             result = f"Predicted Job Category: {predicted_category[0]}"
-    return render_template('professional_skills/job_cat_form.html', result=result)
+    return render_template('professional_skills/job_cat_form.html',result=result)
 
 #------sentiment analysis---------------
 # Function to perform sentiment analysis and visualization for a specific row
@@ -2077,7 +2077,7 @@ def calcFinalScore():
     # entry_with_highest_percentage = max( cv_ranking, key=lambda x: x["matching_percentage"] ) 
     # #Get the skills from the entry with the highest matching_percentage 
     # skills_with_highest_percentage = entry_with_highest_percentage.get("skills", [])
-
+    matching_percentage = session['selected_matching_percentage']
     skills = session['selected_skills'] 
     # Convert the list to a set to get unique words
     unique_words = set(skills)
@@ -2102,12 +2102,14 @@ def calcFinalScore():
     cv_plp_set = set(unique_words_list)
     # Find the common words
     common_words = github_plp_set.intersection(cv_plp_set)
+    common_words = ', '.join(common_words)
 
     # Calculate the percentage of common words
     percentage_common = (len(common_words) / (len(github_plp_set) + len(cv_plp_set))) * 100
-
+    rounded_percentage  = round(percentage_common, 2)
 #LinkedIn Predicted Job Category-------------------------------------------
-    predicted_category = session.get('predicted_category')
+    predicted_category = session.get('result')
+      
 #Recommendation Positive sentiment-----------------------------------------
     positive_percentage = session.get('positive_percentage')
 # PERSONALITY-----------------------------------------------------------------------------------------
@@ -2123,7 +2125,7 @@ def calcFinalScore():
     # return render_template('final_score.html', cand_name=cand_name, jobrole=jobrole, personality_score=personality_score, ac_score=ac_score, textarea_content="", slider_values="")
 
     # With sandani's , once the token issue is solved.
-    return render_template('final_score.html', cand_name=cand_name, jobrole=jobrole, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  percentage_common=percentage_common, textarea_content="", slider_values="")
+    return render_template('final_score.html',matching_percentage=matching_percentage, cand_name=cand_name, positive_percentage=positive_percentage,jobrole=jobrole, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
 
 if __name__ == '__main__':
     app.run(debug=True)
