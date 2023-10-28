@@ -416,7 +416,7 @@ def pf_home():
 
 def calculate_language_proficiency(username, access_token):
     # Authenticate with GitHub
-    access_token = "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"
+    access_token = "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"
     g = Github(access_token)
     user = g.get_user(username)
     
@@ -476,7 +476,7 @@ def plp_form():
 def plp():
     if request.method == 'POST':
         username = request.form.get('username')
-        access_token = "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"
+        access_token = "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"
         
         percentage_scores = calculate_language_proficiency(username, access_token)
         session['percentage_scores'] = percentage_scores
@@ -490,7 +490,7 @@ def plp():
 #----------------git-compare---------------------------
 def get_language_proficiency(username):
     # Authenticate with GitHub
-    access_token = "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"
+    access_token = "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"
     g = Github(access_token)
     user = g.get_user(username)
     
