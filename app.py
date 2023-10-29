@@ -584,7 +584,7 @@ def compare():
 #------------LinkedIn job category ---------------------------------------------------------------------------------------------
 
 def scrape_linkedin_skills(linkedin_profile_url):
-    api_key = '6yX2xeot-MNxR_bBzCFaGg'
+    api_key = 'dphkz8gR8FVGFyU39SJDMw'
     api_endpoint = 'https://nubela.co/proxycurl/api/v2/linkedin'
     headers = {'Authorization': 'Bearer ' + api_key}
 
@@ -612,7 +612,8 @@ def job_cat():
             #predicted_category = model.predict([skills])  #model takes a list of skills
             predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
             result = f"Predicted Job Category: {predicted_category[0]}"
-    return render_template('professional_skills/job_cat_form.html',result=result)
+            session['predicted_category'] = predicted_category[0] 
+    return render_template('professional_skills/job_cat_form.html', result=result)
 
 #------sentiment analysis---------------
 # Function to perform sentiment analysis and visualization for a specific row
@@ -2108,7 +2109,7 @@ def calcFinalScore():
     percentage_common = (len(common_words) / (len(github_plp_set) + len(cv_plp_set))) * 100
     rounded_percentage  = round(percentage_common, 2)
 #LinkedIn Predicted Job Category-------------------------------------------
-    predicted_category = session.get('result')
+    predicted_category = session.get('predicted_category')
       
 #Recommendation Positive sentiment-----------------------------------------
     positive_percentage = session.get('positive_percentage')
@@ -2125,7 +2126,7 @@ def calcFinalScore():
     # return render_template('final_score.html', cand_name=cand_name, jobrole=jobrole, personality_score=personality_score, ac_score=ac_score, textarea_content="", slider_values="")
 
     # With sandani's , once the token issue is solved.
-    return render_template('final_score.html',matching_percentage=matching_percentage, cand_name=cand_name, positive_percentage=positive_percentage,jobrole=jobrole, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
+    return render_template('final_score.html',matching_percentage=matching_percentage,jobrole=jobrole, cand_name=cand_name, positive_percentage=positive_percentage, predicted_category=predicted_category, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
 
 if __name__ == '__main__':
     app.run(debug=True)
