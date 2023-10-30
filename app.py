@@ -449,41 +449,41 @@ def calculate_language_proficiency(username, access_token):
     
     return percentage_scores
 
-# def generate_pie_chart(percentage_scores):
-#     # Programming Language Proficiency Data
-#     languages = list(percentage_scores.keys())
-#     percentages = list(percentage_scores.values())
-    
-#     # Create a pie chart
-#     fig, ax = plt.subplots()
-#     ax.pie(percentages, labels=languages, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
-
-#     ax.axis('equal') # Equal aspect ratio ensures the pie chart is circular
-#     plt.title('Programming Language Proficiency (Percentage)')
-    
-#     canvas = FigureCanvas(fig)
-#     img = io.BytesIO()
-#     canvas.print_png(img)
-#     img.seek(0)
-#     return base64.b64encode(img.getvalue()).decode('utf-8')
-
-def generate_bar_chart(percentage_scores):
+def generate_pie_chart(percentage_scores):
     # Programming Language Proficiency Data
     languages = list(percentage_scores.keys())
     percentages = list(percentage_scores.values())
-
-    # Create a bar chart
+    
+    # Create a pie chart
     fig, ax = plt.subplots()
-    ax.bar(languages, percentages, color='b')
+    ax.pie(percentages, labels=languages, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
 
-    plt.xlabel('Programming Languages')
-    plt.ylabel('Proficiency Percentage')
+    ax.axis('equal') # Equal aspect ratio ensures the pie chart is circular
     plt.title('Programming Language Proficiency (Percentage)')
-
+    
+    canvas = FigureCanvas(fig)
     img = io.BytesIO()
-    plt.savefig(img, format='png')
+    canvas.print_png(img)
     img.seek(0)
     return base64.b64encode(img.getvalue()).decode('utf-8')
+
+# def generate_bar_chart(percentage_scores):
+#     # Programming Language Proficiency Data
+#     languages = list(percentage_scores.keys())
+#     percentages = list(percentage_scores.values())
+
+#     # Create a bar chart
+#     fig, ax = plt.subplots()
+#     ax.bar(languages, percentages, color='b')
+
+#     plt.xlabel('Programming Languages')
+#     plt.ylabel('Proficiency Percentage')
+#     plt.title('Programming Language Proficiency (Percentage)')
+
+#     img = io.BytesIO()
+#     plt.savefig(img, format='png')
+#     img.seek(0)
+#     return base64.b64encode(img.getvalue()).decode('utf-8')
 
 def get_github_user_details(username, access_token):
         
@@ -524,7 +524,7 @@ def plp():
                 # If the user exists, store the percentage_scores and user data in the session
                 session['percentage_scores'] = percentage_scores
                 session['user_data'] = user_data
-                pie_chart = generate_bar_chart(percentage_scores)
+                pie_chart = generate_pie_chart(percentage_scores)
                 return render_template('professional_skills/plp.html', username=username, percentage_scores=percentage_scores, pie_chart=pie_chart, user_data=user_data)
             else:
                 # If the user does not exist, display an error message

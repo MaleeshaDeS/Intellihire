@@ -54,8 +54,8 @@ body{
     border-bottom-right-radius: 50px;
 
     color: #fff;
-    background-color: #f9a826;
-    border-color: #f9a826;
+    background-color: #5c10bf;
+    border-color: #5c10bf;
 }
 
 
@@ -63,7 +63,7 @@ body{
 
 .border-rad:hover{
    
-     background-color: #f9a826;
-    border-color: #f9a826;
+     background-color: #5c10bf;
+    border-color: #5c10bf;
 
 }
