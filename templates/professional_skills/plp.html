@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
-<body background="/static/images/professional_skills/LinkedIn_bg.jpg">
+<body background="/static/images/professional_skills/bg.jpg">
     <nav>
         <div class="nav-logo-container">
             <img src="/static/images/professional_skills/Logo.png" alt="">
@@ -59,19 +59,42 @@
 
                         <div class="input-group mb-3 mt-4">
                             <br>
-                            {% if username %}
-                            <h3> Programming Language Proficiency for {{ username }}:</h3>
-                            <ul>
-                                {% for language, percentage in percentage_scores.items() %}
-                                <li>{{ language }}: {{ "%.2f"|format(percentage) }}%</li>
-                                {% endfor %}
-                            </ul>
-                            <!-- <h3> Visualization:</h3> -->
-                            <img src="data:image/png;base64,{{ pie_chart }}" alt="Pie Chart">
-                            {% endif %}
-                            <br>
-                            <a href="/">Back to Calculator</a>
-
+                            <div class="mx-5">
+                                {% if error_message %}
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>Error:</strong> {{ error_message }}
+                                </div>
+                                <br>
+                                {% else %}
+                                <h3> Programming Language Proficiency for {{ username }}:</h3>
+                                <!-- <ul>
+                                    {% for language, percentage in percentage_scores.items() %}
+                                    <li>{{ language }}: {{ "%.2f"|format(percentage) }}%</li>
+                                    {% endfor %}
+                                </ul> -->
+                                <!-- <h3>User Details:</h3> -->
+                                <div class="user-details">
+                                {% if user_data %}
+                               <ul>
+                                    
+                                  <li> <p><strong>Name:</strong> {{ user_data.name }}</p> </li>
+                                    <li>  <p><strong>Followers:</strong> {{ user_data.followers }}</p></li>
+                                        <li>  <p><strong>Following:</strong> {{ user_data.following }}</p></li>
+                                            <li>  <p><strong>Public Repositories:</strong> {{ user_data.public_repos }}</p></li>
+                                                <li>  <p><strong>Joined GitHub:</strong> {{ user_data.created_at }}</p></li>
+                                </ul>
+                                {% else %}
+                                <p><strong>Error:</strong> User details not available.</p>
+                                {% endif %}
+                                <img src="data:image/png;base64,{{ pie_chart }}" alt="Pie Chart">
+                                {% endif %}
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        
+                        
+    <!--final score flow-->
                             <!--final score flow-->
                             <div class="text-center mt-4">
                                 <button id="next-btn" class="btn btn-success"><a href= "/pf_home/job_cat_form" style="text-decoration: none; color: white;">NEXT >></a></button>
@@ -86,6 +109,11 @@
             </div>
 
         </div>
+        <style>
+            .user-details {
+                text-align: left; /* Align text to the left */
+            }
+        </style>
 </body>
 <footer class="site-footer">
     <div class="footer-container">

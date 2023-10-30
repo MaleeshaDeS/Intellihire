@@ -467,25 +467,78 @@ def generate_pie_chart(percentage_scores):
     img.seek(0)
     return base64.b64encode(img.getvalue()).decode('utf-8')
 
+# def generate_bar_chart(percentage_scores):
+#     # Programming Language Proficiency Data
+#     languages = list(percentage_scores.keys())
+#     percentages = list(percentage_scores.values())
+
+#     # Create a bar chart
+#     fig, ax = plt.subplots()
+#     ax.bar(languages, percentages, color='b')
+
+#     plt.xlabel('Programming Languages')
+#     plt.ylabel('Proficiency Percentage')
+#     plt.title('Programming Language Proficiency (Percentage)')
+
+#     img = io.BytesIO()
+#     plt.savefig(img, format='png')
+#     img.seek(0)
+#     return base64.b64encode(img.getvalue()).decode('utf-8')
+
+def get_github_user_details(username, access_token):
+        
+        g = Github(access_token)
+        user = g.get_user(username)
+        access_token = "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"
+        user_data = {
+            'username': user.login,
+            'name': user.name,
+            'followers': user.followers,
+            'following': user.following,
+            'public_repos': user.public_repos,
+            'created_at': user.created_at.strftime('%Y-%m-%d')
+        }
+
+        return user_data
+
 
 @app.route('/pf_home/plp_form')
 def plp_form():
     return render_template('professional_skills/plp_form.html')
+
+from github import Github, GithubException
 
 @app.route('/pf_home/plp_form/plp', methods=['GET', 'POST'])
 def plp():
     if request.method == 'POST':
         username = request.form.get('username')
         access_token = "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"
-        
-        percentage_scores = calculate_language_proficiency(username, access_token)
-        session['percentage_scores'] = percentage_scores
+        g = Github(access_token, timeout=30)
 
-        pie_chart = generate_pie_chart(percentage_scores)
-        
-        return render_template('professional_skills/plp.html', username=username, percentage_scores=percentage_scores, pie_chart=pie_chart)
-    
-    return render_template('professional_skills/plp.html', username=None, percentage_scores=None, pie_chart=None)
+
+        try:
+            percentage_scores = calculate_language_proficiency(username, access_token)
+            user_data = get_github_user_details(username, access_token)
+
+            if user_data:
+                # If the user exists, store the percentage_scores and user data in the session
+                session['percentage_scores'] = percentage_scores
+                session['user_data'] = user_data
+                pie_chart = generate_pie_chart(percentage_scores)
+                return render_template('professional_skills/plp.html', username=username, percentage_scores=percentage_scores, pie_chart=pie_chart, user_data=user_data)
+            else:
+                # If the user does not exist, display an error message
+                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="Username not found")
+
+        except GithubException as e:
+            if e.status == 404:
+                # Handle a 404 error (user not found)
+                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="Username not found")
+            else:
+                # Handle other Github API errors
+                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="An error occurred while fetching data from GitHub")
+
+    return render_template('professional_skills/plp.html', username=None, percentage_scores=None, pie_chart=None, user_data=None)
 
 #----------------git-compare---------------------------
 def get_language_proficiency(username):
