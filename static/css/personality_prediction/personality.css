@@ -504,8 +504,8 @@ textarea {
 }
 
 .radar-chart-container {
-    height: 510px;
-    width: 60%;
+    height: 100px;
+    width: 30%;
     margin-left: 310px;
     border-radius: 25px;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
@@ -589,10 +589,10 @@ textarea {
     display: block;
     margin: 20px auto;
     max-width: 40%;
-    height: auto;
+    max-height: 450px;
     border-radius: 20px;
     background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 .results-title {

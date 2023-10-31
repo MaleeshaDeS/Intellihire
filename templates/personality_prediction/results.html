@@ -180,7 +180,7 @@
 
     <br /> <br />
     <h3 class="chart-title">Candidate vs Expected Personalities</h3>
-    <canvas id="radarChart" width="300" height="300"></canvas>
+    <canvas id="radarChart"></canvas>
 
 
     <script>
@@ -214,7 +214,7 @@
                         expAgreeableness,
                         expNeuroticism
                     ],
-                    backgroundColor: 'rgba(252,143,50, 0.2)', // Adjust the color
+                    backgroundColor: 'rgba(252,143,50, 0.5)', // Adjust the color
                     borderColor: 'rgba(237,139,0,1)', // Adjust the color
                     borderWidth: 2
                 },
@@ -227,7 +227,7 @@
                         candAgreeableness,
                         candNeuroticism
                     ],
-                    backgroundColor: 'rgba(119,221,119, 0.2)', // Adjust the color
+                    backgroundColor: 'rgba(119,221,119, 0.5)', // Adjust the color
                     borderColor: 'rgba(0,135,62,1)', // Adjust the color
                     borderWidth: 2
                 }
@@ -246,7 +246,7 @@
                         stepSize: 1
                     },
                     pointLabels: {
-                        fontSize: 14,
+                        fontSize: 16,
                         fontColor: '#333' // Adjust label color
                     },
                     gridLines: {
