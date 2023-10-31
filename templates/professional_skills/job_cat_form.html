@@ -96,6 +96,12 @@
                             </div>
                         </form>
                         <br>
+                        {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Error:</strong> {{ error_message }}
+                        </div>
+                        {% endif %}
+
                         {% if result %}
                         <div class="result">
                             <p>{{ result }}</p> <!-- Display the prediction result here -->

@@ -545,15 +545,15 @@ def plp():
                 return render_template('professional_skills/plp.html', username=username, percentage_scores=percentage_scores, pie_chart=pie_chart, user_data=user_data)
             else:
                 # If the user does not exist, display an error message
-                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="Username not found")
+                return render_template('professional_skills/plp_form.html', error_message="Username not found")
 
         except GithubException as e:
             if e.status == 404:
                 # Handle a 404 error (user not found)
-                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="Username not found")
+                 return render_template('professional_skills/plp_form.html', error_message="Username not found")
             else:
                 # Handle other Github API errors
-                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="An error occurred while fetching data from GitHub")
+                return render_template('professional_skills/plp_form.html', error_message="Username not found")
 
     return render_template('professional_skills/plp.html', username=None, percentage_scores=None, pie_chart=None, user_data=None)
 
@@ -675,15 +675,22 @@ fitted_vectorizer = pickle.load(open("models/professional_skills/fitted_vectoriz
 @app.route('/pf_home/job_cat_form', methods=['GET', 'POST'])
 def job_cat():
     result = None
+    error_message = None  # Initialize error message
     if request.method == 'POST':
         linkedin_profile_url = request.form['linkedin_profile_url']
-        skills = scrape_linkedin_skills(linkedin_profile_url)  # Calling scraping function
-        if skills:
-            #predicted_category = model.predict([skills])  #model takes a list of skills
-            predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
-            result = f"Predicted Job Category: {predicted_category[0]}"
-            session['predicted_category'] = predicted_category[0] 
-    return render_template('professional_skills/job_cat_form.html', result=result)
+
+
+        response = requests.head(linkedin_profile_url)
+        if response.status_code != 200:
+            error_message = "Invalid LinkedIn profile URL or the profile does not exist."
+        else:
+            skills = scrape_linkedin_skills(linkedin_profile_url)  # Calling scraping function
+            if skills:
+                predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
+                result = f"Predicted Job Category: {predicted_category[0]}"
+                session['predicted_category'] = predicted_category[0]
+
+    return render_template('professional_skills/job_cat_form.html', result=result, error_message=error_message)
 
 #------sentiment analysis---------------
 # Function to perform sentiment analysis and visualization for a specific row
