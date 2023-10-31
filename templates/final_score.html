@@ -63,8 +63,10 @@
                     <p>{{github_plp_set}}</p>
                     <!-- LinkedIn Predicted JobCat -->
                     <!-- Recomendation letter sentiment analysis score -->
-
-                    <button id="printButton" class="btn btn-lg btn-primary" onclick="downloadPDF('{{ cand_name }}', '{{ jobrole }}', '{{ highest_matching_percentage }}', '{{ personality_score }}', '{{ ac_score }}')">Download as PDF</button>
+                    <p class="final-score-text"><h2>Total Matching Score for the applied Job Role: <b>{{ average_score }}</b>%</h2></p>
+                    <br>
+                    <br>
+                    <button id="printButton" class="btn btn-lg btn-primary" onclick="downloadPDF('{{ cand_name }}', '{{ jobrole }}', '{{ highest_matching_percentage }}', '{{ personality_score }}', '{{ average_score }}', '{{ ac_score }}')">Download as PDF</button>
                     <!-- <button id="downloadPDFBtn" class="btn btn-lg btn-primary" onclick="downloadPDF('{{ cand_name }}', '{{ jobrole }}', '{{ highest_matching_percentage }}', '{{ personality_score }}', '{{ ac_score }}')">Download as PDF</button> -->
                 </div>
 
@@ -79,7 +81,12 @@
     </div>
 
 
-    <br />
+    
+    <br>
+    <br>
+    <br>
+    <br>
+    
     <footer class="site-footer">
         <div class="footer-container">
             <div class="row">

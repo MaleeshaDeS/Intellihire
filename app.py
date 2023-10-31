@@ -654,7 +654,7 @@ def compare():
 #------------LinkedIn job category ---------------------------------------------------------------------------------------------
 
 def scrape_linkedin_skills(linkedin_profile_url):
-    api_key = 'hH639U8eDKBAkWGijpyWEA'
+    api_key = 'dphkz8gR8FVGFyU39SJDMw'
     api_endpoint = 'https://nubela.co/proxycurl/api/v2/linkedin'
     headers = {'Authorization': 'Bearer ' + api_key}
 
@@ -662,12 +662,12 @@ def scrape_linkedin_skills(linkedin_profile_url):
                             params={'url': linkedin_profile_url, 'skills': 'include'},
                             headers=headers)
 
-    if response.status_code == 200:
-            profile_data = response.json()
-            if 'skills' in profile_data:
-                return profile_data['skills']
-        
-    return None
+    profile_data = response.json()
+
+    if 'skills' in profile_data:
+        return profile_data['skills']
+    else:
+        return []
 
 link_model = pickle.load(open("models/professional_skills/model.pkl", "rb"))
 fitted_vectorizer = pickle.load(open("models/professional_skills/fitted_vectorizer.pkl", "rb"))
@@ -675,18 +675,22 @@ fitted_vectorizer = pickle.load(open("models/professional_skills/fitted_vectoriz
 @app.route('/pf_home/job_cat_form', methods=['GET', 'POST'])
 def job_cat():
     result = None
-    error_msg = None  # Initialize an error message variable
+    error_message = None  # Initialize error message
     if request.method == 'POST':
         linkedin_profile_url = request.form['linkedin_profile_url']
-        skills = scrape_linkedin_skills(linkedin_profile_url)
-        if skills:
-            predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
-            result = f"Predicted Job Category: {predicted_category[0]}"
-            session['predicted_category'] = predicted_category[0]
-        else:
-            error_msg = "LinkedIn URL is invalid or skills not found."  # Set the error message
-    return render_template('professional_skills/job_cat_form.html', result=result, error_msg=error_msg)  # Pass error_msg to the template
 
+
+        response = requests.head(linkedin_profile_url)
+        if response.status_code != 200:
+            error_message = "Invalid LinkedIn profile URL or the profile does not exist."
+        else:
+            skills = scrape_linkedin_skills(linkedin_profile_url)  # Calling scraping function
+            if skills:
+                predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
+                result = f"Predicted Job Category: {predicted_category[0]}"
+                session['predicted_category'] = predicted_category[0]
+
+    return render_template('professional_skills/job_cat_form.html', result=result, error_message=error_message)
 
 #------sentiment analysis---------------
 # Function to perform sentiment analysis and visualization for a specific row
@@ -2195,11 +2199,23 @@ def calcFinalScore():
     # #Academic transcript score
     ac_score= session.get('ac_score')
 
-    #Without sandani's
-    # return render_template('final_score.html', cand_name=cand_name, jobrole=jobrole, personality_score=personality_score, ac_score=ac_score, textarea_content="", slider_values="")
+#     #Without sandani's
+#     # return render_template('final_score.html', cand_name=cand_name, jobrole=jobrole, personality_score=personality_score, ac_score=ac_score, textarea_content="", slider_values="")
 
-    # With sandani's , once the token issue is solved.
-    return render_template('final_score.html',matching_percentage=matching_percentage,jobrole=jobrole, cand_name=cand_name, positive_percentage=positive_percentage, predicted_category=predicted_category, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
+#     # With sandani's , once the token issue is solved.
+#     return render_template('final_score.html',matching_percentage=matching_percentage,jobrole=jobrole, cand_name=cand_name, positive_percentage=positive_percentage, predicted_category=predicted_category, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+
+    average_score1 = (personality_score)*(22/100) + (ac_score)*(24.3/100) + (positive_percentage)*(18.4/100) + (rounded_percentage)*(8/100) + (matching_percentage)*(27.3/100)
+    average_score = round(average_score1, 2)
+
+    
+    # # With sandani's , once the token issue is solved.
+    # return render_template('final_score.html',matching_percentage=matching_percentage, cand_name=cand_name, positive_percentage=positive_percentage,jobrole=jobrole, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage, average_score=average_score, textarea_content="", slider_values="")
+    return render_template('final_score.html',matching_percentage=matching_percentage,jobrole=jobrole, cand_name=cand_name, positive_percentage=positive_percentage, predicted_category=predicted_category, common_words=common_words, personality_score=personality_score, ac_score=ac_score, average_score=average_score, rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
 
 if __name__ == '__main__':
     app.run(debug=True)
