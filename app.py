@@ -2125,10 +2125,19 @@ def extract_text():
         else:
             print("Job title not found in skill weights dictionary")
 
+        # Check if predicted_skill_areas is empty
+        if not predicted_skill_areas:
+            return render_template('academic_transcript/WrongPDF.html')  # Redirect to the error page
+
 
         return render_template('academic_transcript/AcaedmicTranscriptsResults.html', pie_chart=pie_chart_file, candidate_id=candidate_id, candidate_name=candidate_name,  position_applied=position_applied, ac_score=ac_score)
 
     return render_template('academic_transcript/AcaedmicTranscriptsIndex.html', error='Please upload a PDF file.')
+
+# Define a route for the error page
+@app.route('/error')
+def error():
+    return render_template('academic_transcript/WrongPDF.html')
 
 #Academic Transcript - Shanali - END -----------------------------------------------------------------------------------------------------------
 
@@ -2199,11 +2208,23 @@ def calcFinalScore():
     # #Academic transcript score
     ac_score= session.get('ac_score')
 
-    #Without sandani's
-    # return render_template('final_score.html', cand_name=cand_name, jobrole=jobrole, personality_score=personality_score, ac_score=ac_score, textarea_content="", slider_values="")
+#     #Without sandani's
+#     # return render_template('final_score.html', cand_name=cand_name, jobrole=jobrole, personality_score=personality_score, ac_score=ac_score, textarea_content="", slider_values="")
 
-    # With sandani's , once the token issue is solved.
-    return render_template('final_score.html',matching_percentage=matching_percentage,jobrole=jobrole, cand_name=cand_name, positive_percentage=positive_percentage, predicted_category=predicted_category, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
+#     # With sandani's , once the token issue is solved.
+#     return render_template('final_score.html',matching_percentage=matching_percentage,jobrole=jobrole, cand_name=cand_name, positive_percentage=positive_percentage, predicted_category=predicted_category, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
+
+    average_score1 = (personality_score)*(22/100) + (ac_score)*(24.3/100) + (positive_percentage)*(18.4/100) + (rounded_percentage)*(8/100) + (matching_percentage)*(27.3/100)
+    average_score = round(average_score1, 2)
+
+    
+    # # With sandani's , once the token issue is solved.
+    # return render_template('final_score.html',matching_percentage=matching_percentage, cand_name=cand_name, positive_percentage=positive_percentage,jobrole=jobrole, common_words=common_words, personality_score=personality_score, ac_score=ac_score,  rounded_percentage =rounded_percentage, average_score=average_score, textarea_content="", slider_values="")
+    return render_template('final_score.html',matching_percentage=matching_percentage,jobrole=jobrole, cand_name=cand_name, positive_percentage=positive_percentage, predicted_category=predicted_category, common_words=common_words, personality_score=personality_score, ac_score=ac_score, average_score=average_score, rounded_percentage =rounded_percentage , textarea_content="", slider_values="")
 
 if __name__ == '__main__':
     app.run(debug=True)

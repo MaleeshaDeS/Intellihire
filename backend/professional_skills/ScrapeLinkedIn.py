@@ -30,7 +30,7 @@
 import requests
 
 def scrape_linkedin_skills(linkedin_profile_url):
-    api_key = 'dphkz8gR8FVGFyU39SJDMw'
+    api_key = 'hH639U8eDKBAkWGijpyWEA'
     api_endpoint = 'https://nubela.co/proxycurl/api/v2/linkedin'
     headers = {'Authorization': 'Bearer ' + api_key}
 
