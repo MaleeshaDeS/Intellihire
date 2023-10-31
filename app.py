@@ -2125,10 +2125,19 @@ def extract_text():
         else:
             print("Job title not found in skill weights dictionary")
 
+        # Check if predicted_skill_areas is empty
+        if not predicted_skill_areas:
+            return render_template('academic_transcript/WrongPDF.html')  # Redirect to the error page
+
 
         return render_template('academic_transcript/AcaedmicTranscriptsResults.html', pie_chart=pie_chart_file, candidate_id=candidate_id, candidate_name=candidate_name,  position_applied=position_applied, ac_score=ac_score)
 
     return render_template('academic_transcript/AcaedmicTranscriptsIndex.html', error='Please upload a PDF file.')
+
+# Define a route for the error page
+@app.route('/error')
+def error():
+    return render_template('academic_transcript/WrongPDF.html')
 
 #Academic Transcript - Shanali - END -----------------------------------------------------------------------------------------------------------
 
