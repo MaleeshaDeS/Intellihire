@@ -456,9 +456,20 @@ def generate_pie_chart(percentage_scores):
     
     # Create a pie chart
     fig, ax = plt.subplots()
-    ax.pie(percentages, labels=languages, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
+    
+    # Use autopct to display percentages on the chart with a slight rotation
+    ax.pie(
+        percentages, 
+        labels=None, 
+        autopct=lambda p: f'{p:.1f}%' if p > 5 else '', 
+        startangle=90, 
+        counterclock=False
+    )
+    
+    # Add a legend for the languages
+    ax.legend(languages, loc="best")
 
-    ax.axis('equal') # Equal aspect ratio ensures the pie chart is circular
+    ax.axis('equal')  # Equal aspect ratio ensures the pie chart is circular
     plt.title('Programming Language Proficiency (Percentage)')
     
     canvas = FigureCanvas(fig)
@@ -472,13 +483,19 @@ def generate_pie_chart(percentage_scores):
 #     languages = list(percentage_scores.keys())
 #     percentages = list(percentage_scores.values())
 
-#     # Create a bar chart
+#     # Define a list of colors for the bars
+#     bar_colors = ['red', 'blue', 'green', 'orange', 'purple']
+
+#     # Create a bar chart with different colors for each bar
 #     fig, ax = plt.subplots()
-#     ax.bar(languages, percentages, color='b')
+#     ax.bar(languages, percentages, color=bar_colors)
 
 #     plt.xlabel('Programming Languages')
 #     plt.ylabel('Proficiency Percentage')
 #     plt.title('Programming Language Proficiency (Percentage)')
+
+#     # Rotate the x-axis labels to avoid overlapping
+#     plt.xticks(rotation=45, ha='right')
 
 #     img = io.BytesIO()
 #     plt.savefig(img, format='png')
@@ -528,15 +545,15 @@ def plp():
                 return render_template('professional_skills/plp.html', username=username, percentage_scores=percentage_scores, pie_chart=pie_chart, user_data=user_data)
             else:
                 # If the user does not exist, display an error message
-                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="Username not found")
+                return render_template('professional_skills/plp_form.html', error_message="Username not found")
 
         except GithubException as e:
             if e.status == 404:
                 # Handle a 404 error (user not found)
-                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="Username not found")
+                 return render_template('professional_skills/plp_form.html', error_message="Username not found")
             else:
                 # Handle other Github API errors
-                return render_template('professional_skills/plp.html', username=username, percentage_scores=None, pie_chart=None, error_message="An error occurred while fetching data from GitHub")
+                return render_template('professional_skills/plp_form.html', error_message="Username not found")
 
     return render_template('professional_skills/plp.html', username=None, percentage_scores=None, pie_chart=None, user_data=None)
 
@@ -658,15 +675,22 @@ fitted_vectorizer = pickle.load(open("models/professional_skills/fitted_vectoriz
 @app.route('/pf_home/job_cat_form', methods=['GET', 'POST'])
 def job_cat():
     result = None
+    error_message = None  # Initialize error message
     if request.method == 'POST':
         linkedin_profile_url = request.form['linkedin_profile_url']
-        skills = scrape_linkedin_skills(linkedin_profile_url)  # Calling scraping function
-        if skills:
-            #predicted_category = model.predict([skills])  #model takes a list of skills
-            predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
-            result = f"Predicted Job Category: {predicted_category[0]}"
-            session['predicted_category'] = predicted_category[0] 
-    return render_template('professional_skills/job_cat_form.html', result=result)
+
+
+        response = requests.head(linkedin_profile_url)
+        if response.status_code != 200:
+            error_message = "Invalid LinkedIn profile URL or the profile does not exist."
+        else:
+            skills = scrape_linkedin_skills(linkedin_profile_url)  # Calling scraping function
+            if skills:
+                predicted_category = link_model.predict(fitted_vectorizer.transform(skills))
+                result = f"Predicted Job Category: {predicted_category[0]}"
+                session['predicted_category'] = predicted_category[0]
+
+    return render_template('professional_skills/job_cat_form.html', result=result, error_message=error_message)
 
 #------sentiment analysis---------------
 # Function to perform sentiment analysis and visualization for a specific row

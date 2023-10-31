@@ -77,7 +77,12 @@
                                     id="button-addon2">CALCULATE</button>
                             </div>
                         </form>
-
+                        {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Error:</strong> {{ error_message }}
+                        </div>
+                        <br>
+                        {% endif %}
 
                     </div>
                     <!-- <br>
