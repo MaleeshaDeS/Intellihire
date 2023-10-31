@@ -456,9 +456,20 @@ def generate_pie_chart(percentage_scores):
     
     # Create a pie chart
     fig, ax = plt.subplots()
-    ax.pie(percentages, labels=languages, autopct='%1.1f%%', startangle=90, colors=plt.cm.Paired.colors)
+    
+    # Use autopct to display percentages on the chart with a slight rotation
+    ax.pie(
+        percentages, 
+        labels=None, 
+        autopct=lambda p: f'{p:.1f}%' if p > 5 else '', 
+        startangle=90, 
+        counterclock=False
+    )
+    
+    # Add a legend for the languages
+    ax.legend(languages, loc="best")
 
-    ax.axis('equal') # Equal aspect ratio ensures the pie chart is circular
+    ax.axis('equal')  # Equal aspect ratio ensures the pie chart is circular
     plt.title('Programming Language Proficiency (Percentage)')
     
     canvas = FigureCanvas(fig)
@@ -472,13 +483,19 @@ def generate_pie_chart(percentage_scores):
 #     languages = list(percentage_scores.keys())
 #     percentages = list(percentage_scores.values())
 
-#     # Create a bar chart
+#     # Define a list of colors for the bars
+#     bar_colors = ['red', 'blue', 'green', 'orange', 'purple']
+
+#     # Create a bar chart with different colors for each bar
 #     fig, ax = plt.subplots()
-#     ax.bar(languages, percentages, color='b')
+#     ax.bar(languages, percentages, color=bar_colors)
 
 #     plt.xlabel('Programming Languages')
 #     plt.ylabel('Proficiency Percentage')
 #     plt.title('Programming Language Proficiency (Percentage)')
+
+#     # Rotate the x-axis labels to avoid overlapping
+#     plt.xticks(rotation=45, ha='right')
 
 #     img = io.BytesIO()
 #     plt.savefig(img, format='png')
